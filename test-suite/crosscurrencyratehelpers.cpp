@@ -585,7 +585,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
     };
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (auto [tenor, q]: quotes) {
+    helpers.reserve(quotes.size());
+for (auto [tenor, q]: quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
             makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
             fixedFreq, fixedDC, euribor3m,
@@ -645,7 +646,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFixedLeg) {
         Real npv = fixedProxy.NPV() + floatProxy.NPV();
         Real tolerance = 1e-10;
 
-        BOOST_CHECK_SMALL(npv, tolerance);
+        QL_CHECK_SMALL(npv, tolerance);
     }
 }
 
@@ -682,7 +683,8 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
     };
 
     std::vector<ext::shared_ptr<RateHelper> > helpers;
-    for (auto [tenor, q]: quotes) {
+    helpers.reserve(quotes.size());
+for (auto [tenor, q]: quotes) {
         helpers.push_back(ext::make_shared<ConstNotionalCrossCurrencySwapRateHelper>(
             makeQuoteHandle(q), tenor, fixingDays, cal, bdc, endOfMonth,
             fixedFreq, fixedDC, euribor3m,
@@ -743,7 +745,7 @@ BOOST_AUTO_TEST_CASE(testConstNotionalHelperCollateralOnFloatingLeg) {
         Real npv = fixedProxy.NPV() + floatProxy.NPV();
         Real tolerance = 1e-10;
 
-        BOOST_CHECK_SMALL(npv, tolerance);
+        QL_CHECK_SMALL(npv, tolerance);
     }
 }
 
