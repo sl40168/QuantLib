@@ -2,6 +2,7 @@
  Copyright (C) 2019 Quaternion Risk Management Ltd
  Copyright (C) 2020 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,11 +22,13 @@
 #include "utilities.hpp"
 #include <boost/make_shared.hpp>
 #include <boost/test/unit_test.hpp>
+#include <ql/pricingengines/blackformula.hpp>
 #include <ql/quotes/simplequote.hpp>
+#include <ql/termstructures/volatility/equityfx/blackvolsurfacedelta.hpp>
+#include <ql/termstructures/volatility/smilesection.hpp>
 #include <ql/termstructures/yield/flatforward.hpp>
 #include <ql/time/calendars/target.hpp>
 #include <ql/time/daycounters/actualactual.hpp>
-#include <ql/termstructures/volatility/equityfx/blackvolsurfacedelta.hpp>
 
 using namespace boost::unit_test_framework;
 using namespace QuantLib;
@@ -291,6 +294,63 @@ BOOST_AUTO_TEST_CASE(testSmileInterpolation) {
     QL_CHECK_CLOSE(smile->volatility(smile->minStrike() - 0.5), 0.0, 1e-8);
     QL_CHECK_CLOSE(smile->volatility(smile->maxStrike() + 0.5), 0.0, 1e-8);
 
+}
+
+BOOST_AUTO_TEST_CASE(testSmileSectionWithAtmLevel) {
+    BOOST_TEST_MESSAGE(
+        "Testing SmileSection from a vol surface that overrides "
+        "atmLevel(Time)...");
+
+    // BlackVolatilitySurfaceDelta carries spot + yield curves and overrides
+    // atmLevel(Time), so the SmileSection returned by smileSection() has a
+    // usable atmLevel() and its optionPrice() works without throwing.
+
+    Date refDate(1, January, 2010);
+    Settings::instance().evaluationDate() = refDate;
+    DayCounter dc = ActualActual(ActualActual::ISDA);
+
+    std::vector<Date> dates = {Date(1, January, 2011), Date(1, January, 2012)};
+    std::vector<Real> putDeltas = {-0.25};
+    std::vector<Real> callDeltas = {0.25};
+    Matrix volMatrix(2, 2, 0.10);
+
+    Handle<Quote> spot(ext::make_shared<SimpleQuote>(1.0));
+    Handle<YieldTermStructure> dts(
+        ext::make_shared<FlatForward>(refDate, 0.011, dc));
+    Handle<YieldTermStructure> fts(
+        ext::make_shared<FlatForward>(refDate, 0.012, dc));
+
+    auto surface = ext::make_shared<BlackVolatilitySurfaceDelta>(
+        refDate, dates, putDeltas, callDeltas, false, volMatrix,
+        dc, TARGET(), spot, dts, fts);
+
+    Date maturity(1, July, 2011);
+    auto smile = surface->smileSection(maturity);
+
+    // atmLevel matches spot * df_q / df_r (FX-style forward)
+    Real expectedFwd = spot->value()
+                     * fts->discount(maturity) / dts->discount(maturity);
+    Real atm = smile->atmLevel();
+    Real tolerance = 1.0e-12;
+    if (std::fabs(atm - expectedFwd) > tolerance)
+        BOOST_FAIL("smile atmLevel mismatch"
+                   << std::fixed << std::setprecision(12)
+                   << "\n    calculated: " << atm
+                   << "\n    expected  : " << expectedFwd);
+
+    // optionPrice() works (without the atmLevel(Time) override it would
+    // throw a QL_REQUIRE) and matches the Black formula at the forward.
+    DiscountFactor df = dts->discount(maturity);
+    Real callPrice = smile->optionPrice(expectedFwd, Option::Call, df);
+    Time T = surface->timeFromReference(maturity);
+    Volatility vol = smile->volatility(expectedFwd);
+    Real expectedCall = blackFormula(Option::Call, expectedFwd, expectedFwd,
+                                      vol * std::sqrt(T), df);
+    if (std::fabs(callPrice - expectedCall) > tolerance)
+        BOOST_FAIL("smile optionPrice mismatch"
+                   << std::fixed << std::setprecision(12)
+                   << "\n    calculated: " << callPrice
+                   << "\n    expected  : " << expectedCall);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

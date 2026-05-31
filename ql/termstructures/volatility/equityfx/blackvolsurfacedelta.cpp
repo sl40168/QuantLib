@@ -2,6 +2,7 @@
  Copyright (C) 2019 Quaternion Risk Management Ltd
  Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
  Copyright (C) 2025 Paolo D'Elia
+ Copyright (C) 2026 Yassine Idyiahia
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -206,7 +207,7 @@ namespace QuantLib {
         return blackVolSmile(timeFromReference(d));
     }
 
-    Real BlackVolatilitySurfaceDelta::forward(Time t) const {
+    Real BlackVolatilitySurfaceDelta::atmLevel(Time t) const {
         return spot_->value() * foreignTS_->discount(t) / domesticTS_->discount(t); // TODO
     }
 
@@ -221,7 +222,7 @@ namespace QuantLib {
                 return interpolators_[putDeltas_.size()]->blackVol(tme, Null<Real>(), true);
             } else {
                 // set strike to be fwd and we will return ATMF
-                strike = forward(tme);
+                strike = atmLevel(tme);
             }
         }
         return blackVolSmile(tme)->volatility(strike);
