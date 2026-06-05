@@ -1,5 +1,5 @@
 #include <ql/time/calendars/china.hpp>
-#include "../mycalendar.hpp"
+#include "time/calendar/mycalendar.hpp"
 #include <iostream>
 #include <cassert>
 

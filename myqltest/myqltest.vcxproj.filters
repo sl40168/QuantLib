@@ -5,10 +5,16 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="time">
+      <UniqueIdentifier>{fa404a0a-3794-46cf-9d5f-8653e6e64e3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="time\calendar">
+      <UniqueIdentifier>{fed908bd-49ae-4c1b-bed8-0bdd545c3e25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mycalendar.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="time\calendar\mycalendar.cpp">
+      <Filter>time\calendar</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

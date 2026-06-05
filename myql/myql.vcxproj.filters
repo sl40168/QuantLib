@@ -16,7 +16,7 @@
     <Filter Include="time">
       <UniqueIdentifier>{47f06603-8e4e-4396-a286-2cd5ee33cbf4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="time\calendars">
+    <Filter Include="time\calendar">
       <UniqueIdentifier>{4ea51d97-5750-4b0c-801f-e1b97d9d0b6d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -27,8 +27,8 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="mycalendar.hpp">
-      <Filter>time\calendars</Filter>
+    <ClInclude Include="time\calendar\mycalendar.hpp">
+      <Filter>time\calendar</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -38,8 +38,8 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="mycalendar.cpp">
-      <Filter>time\calendars</Filter>
+    <ClCompile Include="time\calendar\mycalendar.cpp">
+      <Filter>time\calendar</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

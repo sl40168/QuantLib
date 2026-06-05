@@ -50,7 +50,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F1
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myql", "myql\myql.vcxproj", "{0B38D830-D398-47E3-94EC-D2D2ACF10604}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myqltest", "myql\test\myqltest.vcxproj", "{E8A1B2C3-D4E5-4F6A-7890-ABCDEF123456}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "myqltest", "myqltest\myqltest.vcxproj", "{E8A1B2C3-D4E5-4F6A-7890-ABCDEF123456}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
